@@ -1,0 +1,308 @@
+/* Italian Summer Party Wedding Theme - Lemons & Light */
+
+:root {
+    --lemon-yellow: #FFF59D;
+    --soft-yellow: #FFFDE7;
+    --light-green: #C5E1A5;
+    --forest-green: #7CB342;
+    --white: #FFFFFF;
+    --soft-gray: #F5F5F5;
+    --text-dark: #333333;
+    --text-light: #666666;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.6;
+    color: var(--text-dark);
+    background: linear-gradient(135deg, var(--soft-yellow) 0%, var(--white) 100%);
+    min-height: 100vh;
+}
+
+/* Header Section */
+header {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 245, 157, 0.3));
+    padding: 3rem 2rem;
+    text-align: center;
+    border-bottom: 3px solid var(--lemon-yellow);
+    position: relative;
+    overflow: hidden;
+}
+
+header::before {
+    content: '🍋';
+    position: absolute;
+    font-size: 15rem;
+    opacity: 0.05;
+    top: -3rem;
+    left: -3rem;
+    transform: rotate(-15deg);
+}
+
+header::after {
+    content: '🍋';
+    position: absolute;
+    font-size: 15rem;
+    opacity: 0.05;
+    bottom: -3rem;
+    right: -3rem;
+    transform: rotate(15deg);
+}
+
+h1 {
+    font-size: 3.5rem;
+    color: var(--forest-green);
+    margin-bottom: 1rem;
+    font-weight: 400;
+    letter-spacing: 2px;
+    position: relative;
+    z-index: 1;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: var(--text-light);
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+.date {
+    font-size: 1.8rem;
+    color: var(--forest-green);
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+/* Language Switcher */
+.language-switcher {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.language-switcher a {
+    text-decoration: none;
+    color: var(--forest-green);
+    margin: 0 0.5rem;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.language-switcher a:hover {
+    color: var(--text-dark);
+}
+
+.language-switcher a.active {
+    color: var(--text-dark);
+    text-decoration: underline;
+}
+
+/* Main Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Section Styling */
+section {
+    background: var(--white);
+    margin: 2rem 0;
+    padding: 3rem 2rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    position: relative;
+}
+
+section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(to right, var(--lemon-yellow), var(--light-green), var(--lemon-yellow));
+    border-radius: 15px 15px 0 0;
+}
+
+h2 {
+    font-size: 2.5rem;
+    color: var(--forest-green);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    position: relative;
+}
+
+h2::after {
+    content: '🍋';
+    display: block;
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+h3 {
+    font-size: 1.8rem;
+    color: var(--forest-green);
+    margin: 2rem 0 1rem 0;
+}
+
+p {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+    line-height: 1.8;
+}
+
+/* Map Container */
+.map-container {
+    margin: 2rem 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.map-container iframe {
+    width: 100%;
+    height: 450px;
+    border: none;
+}
+
+/* Timetable */
+.timetable {
+    margin: 2rem 0;
+}
+
+.time-item {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: var(--soft-yellow);
+    border-radius: 10px;
+    border-left: 5px solid var(--forest-green);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.time-item:hover {
+    transform: translateX(10px);
+    box-shadow: 0 4px 15px rgba(124, 179, 66, 0.2);
+}
+
+.time {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--forest-green);
+    min-width: 120px;
+    margin-right: 1.5rem;
+}
+
+.event {
+    font-size: 1.2rem;
+    color: var(--text-dark);
+}
+
+/* Info Boxes */
+.info-box {
+    background: var(--soft-gray);
+    padding: 2rem;
+    border-radius: 10px;
+    margin: 2rem 0;
+    border-left: 5px solid var(--lemon-yellow);
+}
+
+.info-box h3 {
+    margin-top: 0;
+}
+
+/* Footer */
+footer {
+    background: linear-gradient(to top, var(--forest-green), var(--light-green));
+    color: var(--white);
+    text-align: center;
+    padding: 2rem;
+    margin-top: 3rem;
+}
+
+footer p {
+    color: var(--white);
+    margin: 0.5rem 0;
+}
+
+/* Decorative Elements */
+.lemon-decoration {
+    text-align: center;
+    font-size: 3rem;
+    margin: 2rem 0;
+    opacity: 0.7;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    .subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .date {
+        font-size: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 2rem;
+    }
+    
+    .time-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .time {
+        min-width: auto;
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+    
+    .language-switcher {
+        top: 10px;
+        right: 10px;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    section {
+        padding: 2rem 1rem;
+    }
+    
+    .map-container iframe {
+        height: 300px;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+section {
+    animation: fadeIn 0.6s ease-out;
+}
