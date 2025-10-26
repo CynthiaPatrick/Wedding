@@ -3,166 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wedding Celebration | April 10-12, 2026 | Dworek Przy Lesie</title>
-    <meta name="description" content="Join us for an Italian summer party themed wedding celebration at Dworek Przy Lesie, April 10-12, 2026">
+    <title>Patrick & Cynthia | Wedding 2026</title>
+    <meta name="description" content="Join us for our wedding celebration at Dworek Przy Lesie, April 10-12, 2026">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- Sticky Navigation Menu -->
+    <nav class="sticky-nav">
+        <a href="#hero" class="nav-item active" data-section="hero">
+            <span class="nav-icon">💒</span>
+            <span class="nav-label">Start</span>
+        </a>
+        <a href="#about" class="nav-item" data-section="about">
+            <span class="nav-icon">💕</span>
+            <span class="nav-label">About</span>
+        </a>
+        <a href="#location" class="nav-item" data-section="location">
+            <span class="nav-icon">📍</span>
+            <span class="nav-label">Location</span>
+        </a>
+        <a href="#schedule" class="nav-item" data-section="schedule">
+            <span class="nav-icon">⏰</span>
+            <span class="nav-label">Schedule</span>
+        </a>
+        <a href="#info" class="nav-item" data-section="info">
+            <span class="nav-icon">ℹ️</span>
+            <span class="nav-label">Info</span>
+        </a>
+    </nav>
+
     <!-- Language Switcher -->
     <div class="language-switcher">
-        <a href="index.html">EN</a> |
-        <a href="pl.html">PL</a> |
+        <a href="index.html" class="active">EN</a>
+        <a href="pl.html">PL</a>
         <a href="de.html">DE</a>
     </div>
 
-    <!-- Header -->
-    <header>
-        <h1>You're Invited!</h1>
-        <p class="subtitle">An Italian Summer Party Celebration</p>
-        <p class="date">April 10-12, 2026</p>
-        <div class="lemon-decoration">🍋 🍋 🍋</div>
-    </header>
-
-    <!-- Main Content -->
-    <div class="container">
-        
-        <!-- Welcome Section -->
-        <section id="welcome">
-            <h2>Welcome</h2>
-            <p>We are thrilled to invite you to celebrate our wedding in the beautiful orangerie of Dworek Przy Lesie. Join us for a weekend filled with love, laughter, and the warmth of an Italian summer party!</p>
-            <p>Set in a stunning forest location, our celebration will be as bright and joyful as a Mediterranean lemon grove. We can't wait to share this special moment with you!</p>
-        </section>
-
-        <!-- Date & Location -->
-        <section id="location">
-            <h2>When & Where</h2>
-            <div class="info-box">
-                <h3>📅 Date</h3>
-                <p><strong>April 10-12, 2026</strong></p>
-                <p>The celebration weekend spans three days filled with festivities, good food, and great company!</p>
+    <!-- Hero Section with Image -->
+    <section id="hero" class="hero-section">
+        <div class="hero-image">
+            <img src="images/img_2223.jpg" alt="Patrick & Cynthia" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="hero-placeholder" style="display: none;">
+                <p>📷 Place your image "img_2223.jpg" in the images folder</p>
             </div>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">We invite you</h1>
+            <p class="hero-subtitle">to witness us say</p>
+            <h2 class="hero-yes">"I DO"</h2>
+            <div class="hero-date">April 10-12, 2026</div>
+            <div class="hero-venue">Dworek Przy Lesie</div>
+        </div>
+        <div class="scroll-indicator">
+            <span>↓</span>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="content-section">
+        <div class="container">
+            <h2 class="section-title">Our Celebration</h2>
+            <div class="about-content">
+                <p class="lead-text">Join us for a weekend filled with love, laughter, and celebration in the beautiful orangerie of Dworek Przy Lesie.</p>
+                <p>Set in a stunning forest location, our wedding will be an elegant summer party where nature meets timeless romance. We're creating a warm and joyful atmosphere where every moment will be filled with happiness and cherished memories.</p>
+                <p>From Friday's welcome through Sunday's farewell, we invite you to be part of our special journey as we begin our life together.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section id="location" class="content-section location-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-icon">📍</span>
+                Where We Celebrate
+            </h2>
             
-            <div class="info-box">
-                <h3>📍 Venue</h3>
-                <p><strong>Dworek Przy Lesie</strong></p>
-                <p>A charming orangerie nestled in the forest, combining natural beauty with elegant charm.</p>
-                <p>Address: [Full address will be provided to confirmed guests]</p>
+            <div class="location-info">
+                <div class="venue-details">
+                    <h3>Dworek Przy Lesie</h3>
+                    <p class="venue-description">A charming orangerie nestled in the forest, combining natural beauty with elegant charm. The perfect setting for our special day.</p>
+                    <div class="venue-address">
+                        <strong>Address:</strong><br>
+                        Details will be provided to confirmed guests
+                    </div>
+                </div>
             </div>
 
-            <h3>Find Us Here</h3>
             <div class="map-container">
                 <iframe 
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2373.8956!2d18.0756344!3d53.6174989!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470312f6e8c45555%3A0x9f4f6c5c3e2f1234!2sDworek%20Przy%20Lesie!5e0!3m2!1sen!2spl!4v1697734000000!5m2!1sen!2spl"
                     width="100%" 
-                    height="450" 
+                    height="500" 
                     style="border:0;" 
                     allowfullscreen="" 
                     loading="lazy" 
                     referrerpolicy="no-referrer-when-downgrade">
                 </iframe>
             </div>
-            <p style="text-align: center; margin-top: 1rem; color: var(--text-light); font-size: 0.9rem;">
-                <em>Dworek Przy Lesie - A beautiful venue surrounded by nature. Detailed directions will be sent to confirmed guests.</em>
-            </p>
-        </section>
+        </div>
+    </section>
 
-        <!-- Saturday Timetable -->
-        <section id="schedule">
-            <h2>Saturday Schedule</h2>
-            <p style="text-align: center; margin-bottom: 2rem;">April 11, 2026 - Main Celebration Day</p>
-            
-            <div class="timetable">
-                <div class="time-item">
-                    <span class="time">3:00 PM</span>
-                    <span class="event">🌸 Ceremony - The orangerie awaits as we exchange our vows</span>
-                </div>
-                
-                <div class="time-item">
-                    <span class="time">4:00 PM</span>
-                    <span class="event">🥂 Cocktail Hour - Aperitivo with Italian-inspired drinks and appetizers</span>
-                </div>
-                
-                <div class="time-item">
-                    <span class="time">5:30 PM</span>
-                    <span class="event">🍽️ Dinner Reception - A feast celebrating Italian and local flavors</span>
-                </div>
-                
-                <div class="time-item">
-                    <span class="time">7:30 PM</span>
-                    <span class="event">🎂 Cake Cutting - Our lemon-themed wedding cake!</span>
-                </div>
-                
-                <div class="time-item">
-                    <span class="time">8:00 PM</span>
-                    <span class="event">💃 First Dance - Let the celebration begin!</span>
-                </div>
-                
-                <div class="time-item">
-                    <span class="time">8:30 PM</span>
-                    <span class="event">🎉 Party Time - Dancing, music, and joy under the stars</span>
-                </div>
-                
-                <div class="time-item">
-                    <span class="time">12:00 AM</span>
-                    <span class="event">🌙 Late Night Snacks - Midnight pizza and sweet treats</span>
-                </div>
-                
-                <div class="time-item">
-                    <span class="time">2:00 AM</span>
-                    <span class="event">✨ Party continues for those who want to keep celebrating!</span>
+    <!-- Schedule Section -->
+    <section id="schedule" class="content-section schedule-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-icon">⏰</span>
+                Weekend Schedule
+            </h2>
+
+            <!-- Friday -->
+            <div class="day-schedule">
+                <h3 class="day-title">Friday, April 10</h3>
+                <div class="schedule-item">
+                    <span class="schedule-icon">🌅</span>
+                    <div class="schedule-content">
+                        <div class="schedule-time">Anytime</div>
+                        <div class="schedule-event">Arrival & Check-in</div>
+                        <div class="schedule-desc">Arrive at your leisure - no formal plans for the evening</div>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        <!-- Additional Information -->
-        <section id="info">
-            <h2>Important Information</h2>
-            
-            <div class="info-box">
-                <h3>🎨 Dress Code</h3>
-                <p>Garden party elegant - think light, summery colors! Yellows, whites, soft greens, and pastels are perfect. Ladies, floral prints and sundresses are encouraged. Gentlemen, linen suits or light blazers work beautifully.</p>
+            <!-- Saturday -->
+            <div class="day-schedule">
+                <h3 class="day-title">Saturday, April 11 - Main Celebration</h3>
+                
+                <div class="schedule-item">
+                    <span class="schedule-icon">☕</span>
+                    <div class="schedule-content">
+                        <div class="schedule-time">08:00 - 10:00</div>
+                        <div class="schedule-event">Breakfast</div>
+                        <div class="schedule-desc">Start your day with a delicious breakfast</div>
+                    </div>
+                </div>
+
+                <div class="schedule-item">
+                    <span class="schedule-icon">💒</span>
+                    <div class="schedule-content">
+                        <div class="schedule-time">13:00</div>
+                        <div class="schedule-event">Ceremony</div>
+                        <div class="schedule-desc">The orangerie awaits as we exchange our vows</div>
+                    </div>
+                </div>
+
+                <div class="schedule-item">
+                    <span class="schedule-icon">🎉</span>
+                    <div class="schedule-content">
+                        <div class="schedule-time">14:00</div>
+                        <div class="schedule-event">Party Begins!</div>
+                        <div class="schedule-desc">Celebration, music, and joy</div>
+                    </div>
+                </div>
+
+                <div class="schedule-item">
+                    <span class="schedule-icon">🍕</span>
+                    <div class="schedule-content">
+                        <div class="schedule-time">Throughout</div>
+                        <div class="schedule-event">Two Buffets Opening</div>
+                        <div class="schedule-desc">Including a special pizza specialist station</div>
+                    </div>
+                </div>
+
+                <div class="schedule-item">
+                    <span class="schedule-icon">🍲</span>
+                    <div class="schedule-content">
+                        <div class="schedule-time">Midnight</div>
+                        <div class="schedule-event">Midnight Soup</div>
+                        <div class="schedule-desc">Traditional late-night snack</div>
+                    </div>
+                </div>
+
+                <div class="schedule-item">
+                    <span class="schedule-icon">🌙</span>
+                    <div class="schedule-content">
+                        <div class="schedule-time">Until 02:00</div>
+                        <div class="schedule-event">Party Continues</div>
+                        <div class="schedule-desc">Dance the night away!</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="info-box">
-                <h3>🏨 Accommodation</h3>
-                <p>Rooms are available at Dworek Przy Lesie and nearby hotels. Please let us know if you need accommodation assistance when you RSVP.</p>
+            <!-- Sunday -->
+            <div class="day-schedule">
+                <h3 class="day-title">Sunday, April 12</h3>
+                
+                <div class="schedule-item">
+                    <span class="schedule-icon">🥐</span>
+                    <div class="schedule-content">
+                        <div class="schedule-time">Morning</div>
+                        <div class="schedule-event">Breakfast</div>
+                        <div class="schedule-desc">Relaxed morning meal</div>
+                    </div>
+                </div>
+
+                <div class="schedule-item">
+                    <span class="schedule-icon">🎊</span>
+                    <div class="schedule-content">
+                        <div class="schedule-time">12:00 - 17:00</div>
+                        <div class="schedule-event">Poprawiny</div>
+                        <div class="schedule-desc">Traditional Polish after-wedding celebration</div>
+                    </div>
+                </div>
             </div>
+        </div>
+    </section>
 
-            <div class="info-box">
-                <h3>🎁 Gifts</h3>
-                <p>Your presence is the greatest gift! If you wish to give something, we would be grateful for contributions toward our honeymoon adventure.</p>
+    <!-- Info Section -->
+    <section id="info" class="content-section info-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-icon">ℹ️</span>
+                Important Information
+            </h2>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">🏨</div>
+                    <h3>Accommodation</h3>
+                    <p>All rooms are taken care of for our guests. You don't need to worry about anything!</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">👔</div>
+                    <h3>Dress Code</h3>
+                    <p>Elegant summer attire. Light colors, pastels, and summery fabrics are encouraged.</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">🎁</div>
+                    <h3>Gifts</h3>
+                    <p>Your presence is the greatest gift! If you wish, contributions toward our honeymoon are appreciated.</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">✉️</div>
+                    <h3>RSVP</h3>
+                    <p>Please confirm by <strong>March 1, 2026</strong><br>Contact: <a href="mailto:email@example.com">email@example.com</a></p>
+                </div>
             </div>
-
-            <div class="info-box">
-                <h3>✉️ RSVP</h3>
-                <p>Please confirm your attendance by <strong>March 1, 2026</strong></p>
-                <p>Contact us at: <strong>[email@example.com]</strong> or <strong>[phone number]</strong></p>
-            </div>
-        </section>
-
-        <!-- Weekend Overview -->
-        <section id="weekend">
-            <h2>The Full Weekend</h2>
-            
-            <h3>Friday, April 10</h3>
-            <p>🌅 <strong>Welcome Evening</strong> - Casual gathering for early arrivals (6:00 PM onwards)</p>
-            
-            <h3>Saturday, April 11</h3>
-            <p>💍 <strong>Wedding Day</strong> - The main celebration! (see detailed schedule above)</p>
-            
-            <h3>Sunday, April 12</h3>
-            <p>☀️ <strong>Farewell Brunch</strong> - Relaxed morning gathering before we say goodbye (10:00 AM - 1:00 PM)</p>
-        </section>
-
-    </div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer>
-        <div class="lemon-decoration">🍋</div>
-        <p>We can't wait to celebrate with you!</p>
-        <p>© 2026 </p>
+        <p>We can't wait to celebrate with you! ✨</p>
+        <p>Patrick & Cynthia • 2026</p>
     </footer>
 
     <script src="js/main.js"></script>
+</body>
+</html>
 </body>
 </html>
