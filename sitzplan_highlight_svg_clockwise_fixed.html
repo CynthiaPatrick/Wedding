@@ -66,9 +66,17 @@
 
     .search-row {
       display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 10px;
-      margin: 18px 0 12px;
+      grid-template-columns: 1fr;
+      gap: 0;
+      margin: 0 0 10px;
+    }
+
+    .search-label {
+      display: block;
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
     }
 
     .action-row {
@@ -196,7 +204,7 @@
     }
 
     .canvas-card {
-      padding: 16px;
+      padding: 6px;
       overflow: auto;
     }
 
@@ -293,15 +301,6 @@
       fill: #06273c;
     }
 
-    .details {
-      margin-top: 14px;
-      padding: 12px 14px;
-      border-radius: 12px;
-      background: #faf7f3;
-      border: 1px solid #eee3d8;
-      font-size: 14px;
-    }
-
     .export-output {
       width: 100%;
       min-height: 170px;
@@ -326,6 +325,14 @@
 
     .hidden {
       display: none !important;
+    }
+
+    body.view-only-mode {
+      overflow: hidden;
+    }
+
+    body.view-only-mode .details {
+      margin-top: 10px;
     }
 
     @media (max-width: 1100px) {
@@ -393,6 +400,86 @@
         font-size: 8px;
       }
     }
+
+    @media (max-width: 760px) {
+      body.view-only-mode .page {
+        gap: 0;
+        padding: 0;
+        min-height: 100vh;
+      }
+
+      body.view-only-mode .panel,
+      body.view-only-mode .canvas-card {
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+      }
+
+      body.view-only-mode .panel {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        padding: 14px 14px 10px;
+        background: rgba(246, 243, 239, 0.96);
+        backdrop-filter: blur(8px);
+      }
+
+      body.view-only-mode h1,
+      body.view-only-mode p,
+      body.view-only-mode .legend,
+      body.view-only-mode .footer-note {
+        display: none;
+      }
+
+      body.view-only-mode .search-label {
+        margin-top: 0;
+        margin-bottom: 8px;
+        font-size: 16px;
+      }
+
+      body.view-only-mode .search-row {
+        margin: 0;
+        grid-template-columns: 1fr;
+      }
+
+      body.view-only-mode .search-row input {
+        font-size: 16px;
+      }
+
+      body.view-only-mode .hint {
+        margin-top: 8px;
+        margin-bottom: 8px;
+        font-size: 12px;
+      }
+
+      body.view-only-mode .status {
+        margin-bottom: 10px;
+        min-height: 18px;
+      }
+
+      body.view-only-mode .details {
+        margin-top: 0;
+        font-size: 13px;
+      }
+
+      body.view-only-mode .canvas-card {
+        padding: 0;
+        height: calc(100vh - 178px);
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        background: #ffffff;
+      }
+
+      body.view-only-mode .svg-wrap {
+        min-width: max(100vw, 760px);
+        padding: 8px 8px 20px;
+      }
+
+      body.view-only-mode svg {
+        border-radius: 0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -401,10 +488,9 @@
       <h1>Sitzplan</h1>
       <p>Gib einen Namen ein und der passende Platz wird im Plan hervorgehoben. Die Sitznummern laufen im Uhrzeigersinn: zuerst die obere Tischgruppe, danach die untere. Als Hintergrund wird jetzt dein neues SVG verwendet.</p>
 
+      <label class="search-label" for="nameInput">Find your seat by entering your name</label>
       <div class="search-row">
         <input id="nameInput" type="text" placeholder="Name eingeben, z. B. Anna" />
-        <button id="findBtn">Suchen</button>
-        <button id="resetBtn">Reset</button>
       </div>
 
       <div class="action-row" id="editorActions">
@@ -413,7 +499,7 @@
       </div>
 
       <div class="hint">Suche ist nicht case-sensitive. Bei mehreren Treffern werden alle passenden Plätze markiert.</div>
-      <div class="status" id="status"></div>
+      <div class="status hidden" id="status"></div>
 
       <div class="legend">
         <span><i class="dot match"></i> Suchtreffer</span>
@@ -430,10 +516,6 @@
           </thead>
           <tbody id="assignmentTableBody"></tbody>
         </table>
-      </div>
-
-      <div class="details" id="detailsBox">
-        Klicke auf einen Platz im Plan, um die Nummer und den Namen zu sehen.
       </div>
 
       <textarea id="exportOutput" class="export-output" readonly spellcheck="false" placeholder="Hier erscheint dein Export im Format von DEFAULT_ASSIGNMENTS."></textarea>
@@ -465,7 +547,7 @@
     const APP_CONFIG = {
       // true = Bearbeitungstabelle sichtbar
       // false = Produktivmodus ohne sichtbare Namensvergabe
-      showAssignmentEditor: true
+      showAssignmentEditor: false
     };
 
    const DEFAULT_ASSIGNMENTS = [
@@ -1071,10 +1153,7 @@ const SEATS = [
     const seatsLayer = document.getElementById("seatsLayer");
     const tableBody = document.getElementById("assignmentTableBody");
     const status = document.getElementById("status");
-    const detailsBox = document.getElementById("detailsBox");
     const nameInput = document.getElementById("nameInput");
-    const findBtn = document.getElementById("findBtn");
-    const resetBtn = document.getElementById("resetBtn");
     const editorSection = document.getElementById("editorSection");
     const editorActions = document.getElementById("editorActions");
     const exportOutput = document.getElementById("exportOutput");
@@ -1102,11 +1181,13 @@ const SEATS = [
         editorActions.classList.add("hidden");
         exportOutput.classList.add("hidden");
         panel.classList.add("compact");
+        document.body.classList.add("view-only-mode");
       } else {
         editorSection.classList.remove("hidden");
         editorActions.classList.remove("hidden");
         exportOutput.classList.remove("hidden");
         panel.classList.remove("compact");
+        document.body.classList.remove("view-only-mode");
       }
     }
 
@@ -1127,7 +1208,12 @@ const SEATS = [
     }
 
     function getSeatNameLabel(seat) {
-      if (!APP_CONFIG.showAssignmentEditor) {
+      if (selectedSeatNumber === seat.number) {
+        return (seat.name || "").trim();
+      }
+
+      const isSearchMatch = lastMatches.some(match => match.number === seat.number);
+      if (!APP_CONFIG.showAssignmentEditor && !isSearchMatch) {
         return "";
       }
 
@@ -1169,8 +1255,7 @@ const SEATS = [
 
         group.addEventListener("click", () => {
           selectedSeatNumber = seat.number;
-          updateSeatClasses();
-          showSeatDetails(seat);
+          renderSeats();
           scrollToTableRow(seat.number);
         });
 
@@ -1199,9 +1284,6 @@ const SEATS = [
         nameCell.addEventListener("input", () => {
           seat.name = nameCell.textContent.trim();
           updateSeatClasses();
-          if (selectedSeatNumber === seat.number) {
-            showSeatDetails(seat);
-          }
         });
 
         row.appendChild(numberCell);
@@ -1256,10 +1338,6 @@ const SEATS = [
       const sourceName = sourceSeat.name || "";
       sourceSeat.name = targetSeat.name || "";
       targetSeat.name = sourceName;
-
-      if (selectedSeatNumber) {
-        showSeatDetails(seatMap.get(selectedSeatNumber));
-      }
 
       renderTable();
       updateSeatClasses();
@@ -1353,13 +1431,6 @@ const SEATS = [
       endDrag(true);
     }
 
-    function showSeatDetails(seat) {
-      detailsBox.innerHTML = `
-        <strong>Platz ${seat.number}</strong><br>
-        Name: ${seat.name ? seat.name : "—"}
-      `;
-    }
-
     function scrollToTableRow(number) {
       const row = tableBody.querySelector(`tr[data-number="${number}"]`);
       if (row) {
@@ -1384,33 +1455,26 @@ const SEATS = [
 
       if (!query) {
         lastMatches = [];
-        status.textContent = "Bitte einen Namen eingeben.";
-        updateSeatClasses();
+        renderSeats();
         return;
       }
 
       lastMatches = seats.filter(seat => normalize(seat.name).includes(query));
 
       if (lastMatches.length === 0) {
-        status.textContent = `Kein Platz für "${nameInput.value}" gefunden.`;
         selectedSeatNumber = null;
       } else {
-        status.textContent = `${lastMatches.length} Treffer für "${nameInput.value}" gefunden.`;
-        selectedSeatNumber = lastMatches[0].number;
-        showSeatDetails(lastMatches[0]);
-        scrollToTableRow(lastMatches[0].number);
+        selectedSeatNumber = null;
       }
 
-      updateSeatClasses();
+      renderSeats();
     }
 
     function resetAll() {
       nameInput.value = "";
       lastMatches = [];
       selectedSeatNumber = null;
-      status.textContent = "";
-      detailsBox.textContent = "Klicke auf einen Platz im Plan, um die Nummer und den Namen zu sehen.";
-      updateSeatClasses();
+      renderSeats();
     }
 
     function buildAssignmentsExport() {
@@ -1441,15 +1505,9 @@ const SEATS = [
       }
     }
 
-    findBtn.addEventListener("click", searchByName);
-    resetBtn.addEventListener("click", resetAll);
     exportBtn.addEventListener("click", exportAssignments);
     copyBtn.addEventListener("click", copyAssignmentsExport);
-    nameInput.addEventListener("keydown", event => {
-      if (event.key === "Enter") {
-        searchByName();
-      }
-    });
+    nameInput.addEventListener("input", searchByName);
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("pointerup", handlePointerUp);
     window.addEventListener("pointercancel", handlePointerCancel);
@@ -1459,9 +1517,6 @@ const SEATS = [
     renderTable();
     exportOutput.value = buildAssignmentsExport();
 
-    if (!APP_CONFIG.showAssignmentEditor) {
-      detailsBox.textContent = "Klicke auf einen Platz im Plan, um die Nummer und den Namen zu sehen.";
-    }
   </script>
 </body>
 </html>

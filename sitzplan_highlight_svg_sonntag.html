@@ -64,9 +64,17 @@
 
     .search-row {
       display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 10px;
-      margin: 18px 0 12px;
+      grid-template-columns: 1fr;
+      gap: 0;
+      margin: 0 0 10px;
+    }
+
+    .search-label {
+      display: block;
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
     }
 
     .action-row {
@@ -208,7 +216,7 @@
     }
 
     .canvas-card {
-      padding: 16px;
+      padding: 6px;
       overflow: auto;
     }
 
@@ -289,6 +297,14 @@
       white-space: nowrap;
     }
 
+    .hidden {
+      display: none !important;
+    }
+
+    body.view-only-mode {
+      overflow: hidden;
+    }
+
     .seat.match circle {
       fill: var(--match);
       stroke: var(--match-stroke);
@@ -323,6 +339,83 @@
         min-width: 760px;
       }
     }
+
+    @media (max-width: 760px) {
+      body.view-only-mode .page {
+        gap: 0;
+        padding: 0;
+        min-height: 100vh;
+      }
+
+      body.view-only-mode .panel,
+      body.view-only-mode .canvas-card {
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+      }
+
+      body.view-only-mode .panel {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        padding: 14px 14px 10px;
+        background: rgba(246, 243, 239, 0.96);
+        backdrop-filter: blur(8px);
+      }
+
+      body.view-only-mode h1,
+      body.view-only-mode p,
+      body.view-only-mode .legend,
+      body.view-only-mode .hint,
+      body.view-only-mode .table-wrap,
+      body.view-only-mode .action-row,
+      body.view-only-mode #exportOutput {
+        display: none !important;
+      }
+
+      body.view-only-mode .search-label {
+        margin-top: 0;
+        margin-bottom: 8px;
+        font-size: 16px;
+      }
+
+      body.view-only-mode .search-row {
+        margin: 0;
+        grid-template-columns: 1fr;
+      }
+
+      body.view-only-mode .search-row input {
+        font-size: 16px;
+      }
+
+      body.view-only-mode .status {
+        margin: 8px 0 10px;
+        min-height: 18px;
+      }
+
+      body.view-only-mode .details-box {
+        margin: 0;
+        font-size: 13px;
+      }
+
+      body.view-only-mode .canvas-card {
+        padding: 0;
+        height: calc(100vh - 168px);
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        background: #ffffff;
+      }
+
+      body.view-only-mode .svg-wrap {
+        min-width: max(100vw, 900px);
+        padding: 8px 8px 20px;
+      }
+
+      body.view-only-mode svg {
+        border-radius: 0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -331,21 +424,18 @@
       <h1>Sitzplan Sonntag</h1>
       <p>Suche, markiere und bearbeite die Sonntagsplaetze mit dem gleichen Funktionsumfang wie auf der bestehenden Highlight-Seite.</p>
 
+      <label class="search-label" for="nameInput">Find your seat by entering your name</label>
       <div class="search-row">
         <input id="nameInput" type="text" placeholder="Name suchen" />
-        <button id="findBtn" type="button">Suchen</button>
-        <button id="resetBtn" type="button">Reset</button>
       </div>
 
       <div class="hint">Klick auf einen Platz oder auf eine Tabellenzeile, um die Auswahl zu fokussieren. Die Suche markiert alle Treffer gleichzeitig.</div>
-      <div id="status" class="status"></div>
+      <div id="status" class="status hidden"></div>
 
       <div class="legend">
         <span><i class="dot match"></i> Treffer</span>
         <span><i class="dot selected"></i> Auswahl</span>
       </div>
-
-      <div id="detailsBox" class="details-box details">Kein Platz ausgewaehlt.</div>
 
       <div class="table-wrap">
         <table>
@@ -379,7 +469,7 @@
 
   <script>
     const APP_CONFIG = {
-      showAssignmentEditor: true
+      showAssignmentEditor: false
     };
 
     const DEFAULT_ASSIGNMENTS = [
@@ -648,10 +738,7 @@
     const seatsLayer = document.getElementById("seatsLayer");
     const tableBody = document.getElementById("assignmentTableBody");
     const status = document.getElementById("status");
-    const detailsBox = document.getElementById("detailsBox");
     const nameInput = document.getElementById("nameInput");
-    const findBtn = document.getElementById("findBtn");
-    const resetBtn = document.getElementById("resetBtn");
     const exportOutput = document.getElementById("exportOutput");
     const exportBtn = document.getElementById("exportBtn");
     const copyBtn = document.getElementById("copyBtn");
@@ -665,6 +752,14 @@
 
     function normalize(text) {
       return (text || "").toString().trim().toLocaleLowerCase("de");
+    }
+
+    function applyConfig() {
+      if (!APP_CONFIG.showAssignmentEditor) {
+        document.body.classList.add("view-only-mode");
+      } else {
+        document.body.classList.remove("view-only-mode");
+      }
     }
 
     function getSeatLabel(seat) {
@@ -684,7 +779,16 @@
     }
 
     function getSeatNameLabel(seat) {
-      return APP_CONFIG.showAssignmentEditor ? (seat.name || "").trim() : "";
+      if (selectedSeatNumber === seat.number) {
+        return (seat.name || "").trim();
+      }
+
+      const isSearchMatch = lastMatches.includes(seat.number);
+      if (!APP_CONFIG.showAssignmentEditor && !isSearchMatch) {
+        return "";
+      }
+
+      return (seat.name || "").trim();
     }
 
     function updateExportOutput() {
@@ -693,16 +797,6 @@
         .map((seat) => ({ number: seat.number, name: seat.name.trim() }));
 
       exportOutput.value = JSON.stringify(assigned, null, 2);
-    }
-
-    function showSeatDetails(seat) {
-      if (!seat) {
-        detailsBox.textContent = "Kein Platz ausgewaehlt.";
-        return;
-      }
-
-      const name = (seat.name || "").trim() || "Noch keine Zuordnung";
-      detailsBox.innerHTML = `<strong>Platz ${seat.number}</strong><br>${name}`;
     }
 
     function updateDragClasses() {
@@ -744,8 +838,7 @@
       }
 
       selectedSeatNumber = number;
-      updateSeatClasses();
-      showSeatDetails(seat);
+      renderSeats();
       scrollToTableRow(number);
     }
 
@@ -770,9 +863,6 @@
       renderTable();
       updateExportOutput();
 
-      if (selectedSeatNumber) {
-        showSeatDetails(seatMap.get(selectedSeatNumber));
-      }
     }
 
     function removeDragGhost() {
@@ -921,9 +1011,6 @@
           seatMap.get(seat.number).name = seat.name;
           renderSeats();
           updateExportOutput();
-          if (selectedSeatNumber === seat.number) {
-            showSeatDetails(seat);
-          }
         });
 
         row.addEventListener("click", () => selectSeat(seat.number));
@@ -941,8 +1028,7 @@
 
       if (!query) {
         lastMatches = [];
-        status.textContent = "Bitte einen Namen eingeben.";
-        updateSeatClasses();
+        renderSeats();
         return;
       }
 
@@ -953,26 +1039,22 @@
       lastMatches = matches;
 
       if (!matches.length) {
-        status.textContent = "Keine Treffer gefunden.";
+        selectedSeatNumber = null;
         updateSeatClasses();
         return;
       }
 
-      status.textContent = `${matches.length} Treffer gefunden.`;
-      selectSeat(matches[0]);
+      selectedSeatNumber = null;
+      renderSeats();
     }
 
     function resetAll() {
       nameInput.value = "";
       selectedSeatNumber = null;
       lastMatches = [];
-      status.textContent = "";
-      updateSeatClasses();
-      showSeatDetails(null);
+      renderSeats();
     }
 
-    findBtn.addEventListener("click", runSearch);
-    resetBtn.addEventListener("click", resetAll);
     exportBtn.addEventListener("click", updateExportOutput);
     copyBtn.addEventListener("click", async () => {
       updateExportOutput();
@@ -983,16 +1065,12 @@
         status.textContent = "Kopieren nicht moeglich. Bitte JSON manuell kopieren.";
       }
     });
-    nameInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        runSearch();
-      }
-    });
+    nameInput.addEventListener("input", runSearch);
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("pointerup", handlePointerUp);
     window.addEventListener("pointercancel", handlePointerCancel);
 
+    applyConfig();
     renderSeats();
     renderTable();
     updateExportOutput();
