@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sitzplan Highlight Sonntag</title>
+  <style>
+    :root {
+      --bg: #f6f3ef;
+      --card: #ffffff;
+      --line: #ddd6cf;
+      --text: #1f1f1f;
+      --muted: #6f6b66;
+      --accent: #d9a441;
+      --match: #f2c35d;
+      --match-stroke: #a46b00;
+      --selected: #9bd3ff;
+      --selected-stroke: #0b5a8c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .page {
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) 1fr;
+      gap: 24px;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    .panel, .canvas-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+    }
+
+    .panel {
+      padding: 20px;
+      align-self: start;
+      position: sticky;
+      top: 24px;
+      max-height: calc(100vh - 48px);
+      overflow: auto;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+    }
+
+    p {
+      margin: 0 0 14px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      margin: 18px 0 12px;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0 0 16px;
+    }
+
+    input, button, textarea {
+      font: inherit;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+    }
+
+    input:focus, textarea:focus {
+      outline: 2px solid rgba(217, 164, 65, 0.25);
+      border-color: var(--accent);
+    }
+
+    button {
+      background: #ffffff;
+      cursor: pointer;
+      min-height: 44px;
+    }
+
+    button:hover {
+      border-color: #b8aea3;
+    }
+
+    .hint, .details {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .status {
+      min-height: 22px;
+      margin: 0 0 18px;
+      font-size: 14px;
+      color: #5e4b18;
+      font-weight: bold;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 1px solid #999;
+    }
+
+    .dot.match {
+      background: var(--match);
+      border-color: var(--match-stroke);
+    }
+
+    .dot.selected {
+      background: var(--selected);
+      border-color: var(--selected-stroke);
+    }
+
+    .details-box {
+      margin: 0 0 18px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #faf7f3;
+      border: 1px solid #eee3d7;
+    }
+
+    .table-wrap {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #eee7df;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #faf7f3;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    td:first-child {
+      width: 72px;
+      font-weight: bold;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr.selected-row td {
+      background: #fff5dd;
+    }
+
+    td[contenteditable="true"] {
+      background: #fffdf9;
+    }
+
+    td[contenteditable="true"]:focus {
+      outline: 2px solid rgba(217, 164, 65, 0.22);
+      outline-offset: -2px;
+      background: #fffaf1;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      resize: vertical;
+      background: #fffdf9;
+    }
+
+    .canvas-card {
+      padding: 16px;
+      overflow: auto;
+    }
+
+    .svg-wrap {
+      min-width: 980px;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 16px;
+      background: #ffffff;
+    }
+
+    image {
+      pointer-events: none;
+    }
+
+    .seat circle {
+      fill: rgba(31, 31, 31, 0.82);
+      stroke: none;
+      stroke-width: 0;
+      vector-effect: non-scaling-stroke;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    .seat text {
+      fill: #ffffff;
+      font-size: 14px;
+      font-weight: bold;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      alignment-baseline: middle;
+      paint-order: stroke;
+      stroke: rgba(0, 0, 0, 0.35);
+      stroke-width: 1.4;
+      stroke-linejoin: round;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .seat .seat-name-label {
+      fill: #1f1f1f;
+      font-size: 12.5px;
+      font-weight: 600;
+      stroke: rgba(255, 255, 255, 0.9);
+      stroke-width: 3;
+      paint-order: stroke;
+      pointer-events: auto;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .seat.drag-source circle {
+      fill: rgba(31, 31, 31, 0.45);
+    }
+
+    .seat.drop-target circle {
+      stroke: var(--accent);
+      stroke-width: 4;
+    }
+
+    .drag-ghost {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 9999;
+      pointer-events: none;
+      transform: translate(-50%, -140%);
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(31, 31, 31, 0.92);
+      color: #ffffff;
+      font: 600 13px Arial, Helvetica, sans-serif;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      white-space: nowrap;
+    }
+
+    .seat.match circle {
+      fill: var(--match);
+      stroke: var(--match-stroke);
+      stroke-width: 4;
+    }
+
+    .seat.match text {
+      fill: #2d1a00;
+    }
+
+    .seat.selected circle {
+      fill: var(--selected);
+      stroke: var(--selected-stroke);
+      stroke-width: 4;
+    }
+
+    .seat.selected text {
+      fill: #06273c;
+    }
+
+    @media (max-width: 1040px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        position: static;
+        max-height: none;
+      }
+
+      .svg-wrap {
+        min-width: 760px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <aside class="panel">
+      <h1>Sitzplan Sonntag</h1>
+      <p>Suche, markiere und bearbeite die Sonntagsplaetze mit dem gleichen Funktionsumfang wie auf der bestehenden Highlight-Seite.</p>
+
+      <div class="search-row">
+        <input id="nameInput" type="text" placeholder="Name suchen" />
+        <button id="findBtn" type="button">Suchen</button>
+        <button id="resetBtn" type="button">Reset</button>
+      </div>
+
+      <div class="hint">Klick auf einen Platz oder auf eine Tabellenzeile, um die Auswahl zu fokussieren. Die Suche markiert alle Treffer gleichzeitig.</div>
+      <div id="status" class="status"></div>
+
+      <div class="legend">
+        <span><i class="dot match"></i> Treffer</span>
+        <span><i class="dot selected"></i> Auswahl</span>
+      </div>
+
+      <div id="detailsBox" class="details-box details">Kein Platz ausgewaehlt.</div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Platz</th>
+              <th>Name</th>
+            </tr>
+          </thead>
+          <tbody id="assignmentTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="action-row" style="margin-top:16px;">
+        <button id="exportBtn" type="button">JSON aktualisieren</button>
+        <button id="copyBtn" type="button">JSON kopieren</button>
+      </div>
+
+      <textarea id="exportOutput" spellcheck="false"></textarea>
+    </aside>
+
+    <main class="canvas-card">
+      <div class="svg-wrap">
+        <svg viewBox="0 0 1190.25 1683.75" xmlns="http://www.w3.org/2000/svg" aria-label="Sitzplan Sonntag">
+          <image href="Seating Chart new.svg" x="0" y="0" width="1190.25" height="1683.75" />
+          <g id="seatsLayer"></g>
+        </svg>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const APP_CONFIG = {
+      showAssignmentEditor: true
+    };
+
+    const DEFAULT_ASSIGNMENTS = [
+  {
+    "number": 1,
+    "name": "Chrisi"
+  },
+  {
+    "number": 2,
+    "name": "Maryam"
+  },
+  {
+    "number": 3,
+    "name": "Nermina"
+  },
+  {
+    "number": 4,
+    "name": "Lukas"
+  },
+  {
+    "number": 5,
+    "name": "Isi"
+  },
+  {
+    "number": 6,
+    "name": "Ansi"
+  },
+  {
+    "number": 7,
+    "name": "Ina"
+  },
+  {
+    "number": 8,
+    "name": "Josef"
+  },
+  {
+    "number": 9,
+    "name": "Silvina"
+  },
+  {
+    "number": 10,
+    "name": "Rick"
+  },
+  {
+    "number": 11,
+    "name": "Milos"
+  },
+  {
+    "number": 12,
+    "name": "Steffi"
+  },
+  {
+    "number": 13,
+    "name": "Petra"
+  },
+  {
+    "number": 14,
+    "name": "Markus"
+  },
+  {
+    "number": 15,
+    "name": "Marek"
+  },
+  {
+    "number": 16,
+    "name": "Magda"
+  },
+  {
+    "number": 17,
+    "name": "Krysiu"
+  },
+  {
+    "number": 18,
+    "name": "Teresa"
+  },
+  {
+    "number": 19,
+    "name": "Eddy"
+  },
+  {
+    "number": 20,
+    "name": "Clara"
+  },
+  {
+    "number": 21,
+    "name": "Mama K"
+  },
+  {
+    "number": 22,
+    "name": "Tante Mirka"
+  },
+  {
+    "number": 23,
+    "name": "Mathias"
+  },
+  {
+    "number": 24,
+    "name": "Konsti"
+  },
+  {
+    "number": 25,
+    "name": "Betti"
+  },
+  {
+    "number": 26,
+    "name": "Fynn"
+  },
+  {
+    "number": 27,
+    "name": "Luni"
+  },
+  {
+    "number": 28,
+    "name": "Anna"
+  },
+  {
+    "number": 29,
+    "name": "Patrick Eidn"
+  },
+  {
+    "number": 30,
+    "name": "Klausi"
+  },
+  {
+    "number": 31,
+    "name": "Sebastian"
+  },
+  {
+    "number": 32,
+    "name": "Patrick"
+  },
+  {
+    "number": 33,
+    "name": "Cynthia"
+  },
+  {
+    "number": 34,
+    "name": "Kasia"
+  },
+  {
+    "number": 35,
+    "name": "Seba"
+  },
+  {
+    "number": 36,
+    "name": "Wera"
+  },
+  {
+    "number": 37,
+    "name": "Damian"
+  },
+  {
+    "number": 38,
+    "name": "Ola"
+  },
+  {
+    "number": 39,
+    "name": "Bianca"
+  },
+  {
+    "number": 40,
+    "name": "Xaver"
+  },
+  {
+    "number": 41,
+    "name": "Camilla"
+  },
+  {
+    "number": 42,
+    "name": "Clemens"
+  },
+  {
+    "number": 43,
+    "name": "Dome"
+  },
+  {
+    "number": 44,
+    "name": "Juna"
+  },
+  {
+    "number": 45,
+    "name": "Papa"
+  },
+  {
+    "number": 46,
+    "name": "Mama G"
+  },
+  {
+    "number": 47,
+    "name": "Sebastian Maggot"
+  },
+  {
+    "number": 48,
+    "name": "Ewelina Sebastian"
+  },
+  {
+    "number": 49,
+    "name": "Astrid"
+  }
+];
+    const SEATS = [
+      { number: 1, x: 532.0, y: 1183.0, name: "" },
+      { number: 2, x: 532.0, y: 1256.0, name: "" },
+      { number: 3, x: 532.0, y: 1111.0, name: "" },
+      { number: 4, x: 543.0, y: 1028.0, name: "" },
+      { number: 5, x: 379.0, y: 1268.0, name: "" },
+      { number: 6, x: 379.0, y: 1189.0, name: "" },
+      { number: 7, x: 379.0, y: 1111.0, name: "" },
+      { number: 8, x: 394.0, y: 1005.0, name: "" },
+      { number: 9, x: 432.0, y: 923.0, name: "" },
+      { number: 10, x: 513.0, y: 882.0, name: "" },
+      { number: 11, x: 634.0, y: 701.0, name: "" },
+      { number: 12, x: 634.0, y: 625.0, name: "" },
+      { number: 13, x: 634.0, y: 777.0, name: "" },
+      { number: 14, x: 618.0, y: 849.0, name: "" },
+      { number: 15, x: 785.0, y: 621.0, name: "" },
+      { number: 16, x: 785.0, y: 698.0, name: "" },
+      { number: 17, x: 785.0, y: 774.0, name: "" },
+      { number: 18, x: 774.0, y: 879.0, name: "" },
+      { number: 19, x: 726.0, y: 955.0, name: "" },
+      { number: 20, x: 639.0, y: 1001.0, name: "" },
+      { number: 21, x: 543.0, y: 1332.0, name: "" },
+      { number: 22, x: 625.0, y: 1328.0, name: "" },
+      { number: 23, x: 438.0, y: 1447.0, name: "" },
+      { number: 24, x: 384.0, y: 1358.0, name: "" },
+      { number: 25, x: 634.0, y: 548.0, name: "" },
+      { number: 26, x: 634.0, y: 472.0, name: "" },
+      { number: 27, x: 634.0, y: 396.0, name: "" },
+      { number: 28, x: 625.0, y: 310.0, name: "" },
+      { number: 29, x: 535.0, y: 314.0, name: "" },
+      { number: 30, x: 396.0, y: 288.0, name: "" },
+      { number: 31, x: 440.0, y: 197.0, name: "" },
+      { number: 32, x: 535.0, y: 160.0, name: "" },
+      { number: 33, x: 625.0, y: 158.0, name: "" },
+      { number: 34, x: 729.0, y: 197.0, name: "" },
+      { number: 35, x: 780.0, y: 280.0, name: "" },
+      { number: 36, x: 785.0, y: 390.0, name: "" },
+      { number: 37, x: 785.0, y: 467.0, name: "" },
+      { number: 38, x: 785.0, y: 544.0, name: "" },
+      { number: 39, x: 382.0, y: 544.0, name: "" },
+      { number: 40, x: 382.0, y: 467.0, name: "" },
+      { number: 41, x: 382.0, y: 390.0, name: "" },
+      { number: 42, x: 530.0, y: 393.0, name: "" },
+      { number: 43, x: 530.0, y: 465.0, name: "" },
+      { number: 44, x: 530.0, y: 537.0, name: "" },
+      { number: 45, x: 524.0, y: 1495.0, name: "" },
+      { number: 46, x: 646.0, y: 1491.0, name: "" },
+      { number: 47, x: 744.0, y: 1431.0, name: "" },
+      { number: 48, x: 804.0, y: 1328.0, name: "" },
+      { number: 49, x: 567.0, y: 865.0, name: "" }
+    ];
+
+    const seatMap = new Map(SEATS.map((seat) => [seat.number, { ...seat }]));
+
+    DEFAULT_ASSIGNMENTS.forEach((entry) => {
+      if (seatMap.has(entry.number)) {
+        seatMap.get(entry.number).name = entry.name;
+      }
+    });
+
+    const seats = Array.from(seatMap.values()).sort((a, b) => a.number - b.number);
+
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    const SEAT_RADIUS = 14;
+
+    const seatsLayer = document.getElementById("seatsLayer");
+    const tableBody = document.getElementById("assignmentTableBody");
+    const status = document.getElementById("status");
+    const detailsBox = document.getElementById("detailsBox");
+    const nameInput = document.getElementById("nameInput");
+    const findBtn = document.getElementById("findBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const exportOutput = document.getElementById("exportOutput");
+    const exportBtn = document.getElementById("exportBtn");
+    const copyBtn = document.getElementById("copyBtn");
+
+    let selectedSeatNumber = null;
+    let lastMatches = [];
+    let draggedSeatNumber = null;
+    let currentDropTargetNumber = null;
+    let dragGhost = null;
+    let pointerDrag = null;
+
+    function normalize(text) {
+      return (text || "").toString().trim().toLocaleLowerCase("de");
+    }
+
+    function getSeatLabel(seat) {
+      const name = (seat.name || "").trim();
+      if (!name) {
+        return String(seat.number);
+      }
+
+      const initials = name
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part.charAt(0).toLocaleUpperCase("de"))
+        .join("");
+
+      return initials || String(seat.number);
+    }
+
+    function getSeatNameLabel(seat) {
+      return APP_CONFIG.showAssignmentEditor ? (seat.name || "").trim() : "";
+    }
+
+    function updateExportOutput() {
+      const assigned = seats
+        .filter((seat) => (seat.name || "").trim())
+        .map((seat) => ({ number: seat.number, name: seat.name.trim() }));
+
+      exportOutput.value = JSON.stringify(assigned, null, 2);
+    }
+
+    function showSeatDetails(seat) {
+      if (!seat) {
+        detailsBox.textContent = "Kein Platz ausgewaehlt.";
+        return;
+      }
+
+      const name = (seat.name || "").trim() || "Noch keine Zuordnung";
+      detailsBox.innerHTML = `<strong>Platz ${seat.number}</strong><br>${name}`;
+    }
+
+    function updateDragClasses() {
+      seatsLayer.querySelectorAll(".seat").forEach((group) => {
+        const number = Number(group.dataset.number);
+        group.classList.toggle("drag-source", number === draggedSeatNumber);
+        group.classList.toggle("drop-target", number === currentDropTargetNumber);
+      });
+    }
+
+    function updateSeatClasses() {
+      const matchSet = new Set(lastMatches);
+
+      seatsLayer.querySelectorAll(".seat").forEach((group) => {
+        const number = Number(group.dataset.number);
+        group.classList.toggle("match", matchSet.has(number));
+        group.classList.toggle("selected", number === selectedSeatNumber);
+      });
+
+      tableBody.querySelectorAll("tr").forEach((row) => {
+        const number = Number(row.dataset.number);
+        row.classList.toggle("selected-row", number === selectedSeatNumber || matchSet.has(number));
+      });
+
+      updateDragClasses();
+    }
+
+    function scrollToTableRow(number) {
+      const row = tableBody.querySelector(`tr[data-number="${number}"]`);
+      if (row) {
+        row.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+
+    function selectSeat(number) {
+      const seat = seatMap.get(number);
+      if (!seat) {
+        return;
+      }
+
+      selectedSeatNumber = number;
+      updateSeatClasses();
+      showSeatDetails(seat);
+      scrollToTableRow(number);
+    }
+
+    function swapSeatAssignments(sourceNumber, targetNumber) {
+      if (!sourceNumber || !targetNumber || sourceNumber === targetNumber) {
+        return;
+      }
+
+      const sourceSeat = seatMap.get(sourceNumber);
+      const targetSeat = seatMap.get(targetNumber);
+
+      if (!sourceSeat || !targetSeat) {
+        return;
+      }
+
+      const sourceName = sourceSeat.name || "";
+      sourceSeat.name = targetSeat.name || "";
+      targetSeat.name = sourceName;
+
+      status.textContent = `Name von Platz ${sourceNumber} mit Platz ${targetNumber} getauscht.`;
+      renderSeats();
+      renderTable();
+      updateExportOutput();
+
+      if (selectedSeatNumber) {
+        showSeatDetails(seatMap.get(selectedSeatNumber));
+      }
+    }
+
+    function removeDragGhost() {
+      if (dragGhost) {
+        dragGhost.remove();
+        dragGhost = null;
+      }
+    }
+
+    function endDrag(cancelled = false) {
+      const sourceNumber = draggedSeatNumber;
+      const targetNumber = currentDropTargetNumber;
+
+      draggedSeatNumber = null;
+      currentDropTargetNumber = null;
+      pointerDrag = null;
+      removeDragGhost();
+      updateDragClasses();
+
+      if (!cancelled && sourceNumber && targetNumber && sourceNumber !== targetNumber) {
+        swapSeatAssignments(sourceNumber, targetNumber);
+      }
+    }
+
+    function updateDropTarget(clientX, clientY) {
+      const element = document.elementFromPoint(clientX, clientY);
+      const targetSeat = element && element.closest ? element.closest(".seat") : null;
+      currentDropTargetNumber = targetSeat ? Number(targetSeat.dataset.number) : null;
+
+      if (currentDropTargetNumber === draggedSeatNumber) {
+        currentDropTargetNumber = null;
+      }
+
+      updateDragClasses();
+    }
+
+    function startNameDrag(event, seatNumber) {
+      const seat = seatMap.get(seatNumber);
+      if (!seat || !(seat.name || "").trim()) {
+        return;
+      }
+
+      event.preventDefault();
+
+      draggedSeatNumber = seatNumber;
+      currentDropTargetNumber = null;
+      pointerDrag = {
+        pointerId: event.pointerId
+      };
+
+      dragGhost = document.createElement("div");
+      dragGhost.className = "drag-ghost";
+      dragGhost.textContent = seat.name.trim();
+      document.body.appendChild(dragGhost);
+      dragGhost.style.left = `${event.clientX}px`;
+      dragGhost.style.top = `${event.clientY}px`;
+
+      updateDragClasses();
+    }
+
+    function handlePointerMove(event) {
+      if (!pointerDrag || event.pointerId !== pointerDrag.pointerId) {
+        return;
+      }
+
+      if (dragGhost) {
+        dragGhost.style.left = `${event.clientX}px`;
+        dragGhost.style.top = `${event.clientY}px`;
+      }
+
+      updateDropTarget(event.clientX, event.clientY);
+    }
+
+    function handlePointerUp(event) {
+      if (!pointerDrag || event.pointerId !== pointerDrag.pointerId) {
+        return;
+      }
+
+      updateDropTarget(event.clientX, event.clientY);
+      endDrag(false);
+    }
+
+    function handlePointerCancel(event) {
+      if (!pointerDrag || event.pointerId !== pointerDrag.pointerId) {
+        return;
+      }
+
+      endDrag(true);
+    }
+
+    function renderSeats() {
+      seatsLayer.innerHTML = "";
+
+      seats.forEach((seat) => {
+        const group = document.createElementNS(SVG_NS, "g");
+        group.setAttribute("class", "seat");
+        group.dataset.number = seat.number;
+        group.dataset.name = seat.name || "";
+        group.setAttribute("aria-label", `Platz ${seat.number}`);
+
+        const circle = document.createElementNS(SVG_NS, "circle");
+        circle.setAttribute("cx", seat.x);
+        circle.setAttribute("cy", seat.y);
+        circle.setAttribute("r", SEAT_RADIUS);
+
+        const text = document.createElementNS(SVG_NS, "text");
+        text.setAttribute("x", seat.x);
+        text.setAttribute("y", seat.y);
+        text.setAttribute("dy", "0.1em");
+        text.textContent = getSeatLabel(seat);
+
+        const nameText = document.createElementNS(SVG_NS, "text");
+        nameText.setAttribute("class", "seat-name-label");
+        nameText.setAttribute("x", seat.x);
+        nameText.setAttribute("y", seat.y - SEAT_RADIUS - 10);
+        nameText.textContent = getSeatNameLabel(seat);
+        nameText.addEventListener("pointerdown", (event) => startNameDrag(event, seat.number));
+
+        group.appendChild(circle);
+        group.appendChild(nameText);
+        group.appendChild(text);
+        group.addEventListener("click", () => selectSeat(seat.number));
+        seatsLayer.appendChild(group);
+      });
+
+      updateSeatClasses();
+    }
+
+    function renderTable() {
+      tableBody.innerHTML = "";
+
+      seats.forEach((seat) => {
+        const row = document.createElement("tr");
+        row.dataset.number = seat.number;
+
+        const numberCell = document.createElement("td");
+        numberCell.textContent = seat.number;
+
+        const nameCell = document.createElement("td");
+        nameCell.contentEditable = APP_CONFIG.showAssignmentEditor ? "true" : "false";
+        nameCell.spellcheck = false;
+        nameCell.textContent = seat.name || "";
+
+        nameCell.addEventListener("input", () => {
+          seat.name = nameCell.textContent.trim();
+          seatMap.get(seat.number).name = seat.name;
+          renderSeats();
+          updateExportOutput();
+          if (selectedSeatNumber === seat.number) {
+            showSeatDetails(seat);
+          }
+        });
+
+        row.addEventListener("click", () => selectSeat(seat.number));
+
+        row.appendChild(numberCell);
+        row.appendChild(nameCell);
+        tableBody.appendChild(row);
+      });
+
+      updateSeatClasses();
+    }
+
+    function runSearch() {
+      const query = normalize(nameInput.value);
+
+      if (!query) {
+        lastMatches = [];
+        status.textContent = "Bitte einen Namen eingeben.";
+        updateSeatClasses();
+        return;
+      }
+
+      const matches = seats
+        .filter((seat) => normalize(seat.name).includes(query))
+        .map((seat) => seat.number);
+
+      lastMatches = matches;
+
+      if (!matches.length) {
+        status.textContent = "Keine Treffer gefunden.";
+        updateSeatClasses();
+        return;
+      }
+
+      status.textContent = `${matches.length} Treffer gefunden.`;
+      selectSeat(matches[0]);
+    }
+
+    function resetAll() {
+      nameInput.value = "";
+      selectedSeatNumber = null;
+      lastMatches = [];
+      status.textContent = "";
+      updateSeatClasses();
+      showSeatDetails(null);
+    }
+
+    findBtn.addEventListener("click", runSearch);
+    resetBtn.addEventListener("click", resetAll);
+    exportBtn.addEventListener("click", updateExportOutput);
+    copyBtn.addEventListener("click", async () => {
+      updateExportOutput();
+      try {
+        await navigator.clipboard.writeText(exportOutput.value);
+        status.textContent = "JSON in die Zwischenablage kopiert.";
+      } catch (error) {
+        status.textContent = "Kopieren nicht moeglich. Bitte JSON manuell kopieren.";
+      }
+    });
+    nameInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        runSearch();
+      }
+    });
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerCancel);
+
+    renderSeats();
+    renderTable();
+    updateExportOutput();
+  </script>
+</body>
+</html>

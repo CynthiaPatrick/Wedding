@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1190.25 1683.75" role="img" aria-labelledby="title desc">
+  <title id="title">Sonntag Sitzplan Layout</title>
+  <desc id="desc">Bereinigter Sitzplan fuer Sonntag mit ausgerichteten Tischen und gleichmaessigem Sitzabstand.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fffdf8" />
+      <stop offset="100%" stop-color="#f6f0e6" />
+    </linearGradient>
+    <linearGradient id="tableFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a4139" />
+      <stop offset="100%" stop-color="#2f2822" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000000" flood-opacity="0.16" />
+    </filter>
+  </defs>
+
+  <rect width="1190.25" height="1683.75" fill="url(#bg)" />
+
+  <g opacity="0.45">
+    <circle cx="170" cy="1220" r="170" fill="#f0e5d3" />
+    <circle cx="1015" cy="230" r="160" fill="#efe1cb" />
+    <circle cx="975" cy="1460" r="210" fill="#f3e8d7" />
+  </g>
+
+  <g fill="none" stroke="#e1d4bf" stroke-width="4" stroke-linecap="round" opacity="0.9">
+    <path d="M 120 580 C 210 520, 300 520, 390 580" />
+    <path d="M 785 1080 C 875 1015, 955 1015, 1045 1080" />
+    <path d="M 395 1215 C 505 1165, 635 1165, 755 1215" />
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="214" y="76" width="76" height="406" rx="38" fill="url(#tableFill)" />
+    <rect x="418" y="188" width="326" height="392" rx="160" fill="url(#tableFill)" />
+    <rect x="675" y="586" width="76" height="420" rx="38" fill="url(#tableFill)" />
+    <rect x="392" y="1296" width="364" height="192" rx="92" fill="url(#tableFill)" />
+  </g>
+
+  <g fill="#ffffff" opacity="0.12">
+    <rect x="227" y="95" width="16" height="370" rx="8" />
+    <rect x="451" y="222" width="24" height="324" rx="12" />
+    <rect x="708" y="607" width="12" height="378" rx="6" />
+    <rect x="425" y="1325" width="298" height="16" rx="8" />
+  </g>
+
+  <g fill="#ffffff" fill-opacity="0.1" stroke="#d7c3a3" stroke-width="3">
+    <circle cx="581" cy="385" r="108" />
+    <circle cx="581" cy="385" r="152" fill="none" stroke-dasharray="8 16" opacity="0.35" />
+  </g>
+
+  <g fill="none" stroke="#cdb796" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.65">
+    <path d="M 250 88 C 315 115, 352 172, 352 236" />
+    <path d="M 796 610 C 843 662, 845 836, 786 902" />
+    <path d="M 442 1518 C 548 1560, 655 1560, 744 1510" />
+  </g>
+
+  <g>
+    <circle class="guide-seat" cx="322" cy="357" r="16" />
+    <circle class="guide-seat" cx="319" cy="433" r="16" />
+    <circle class="guide-seat" cx="314" cy="291" r="16" />
+    <circle class="guide-seat" cx="309" cy="226" r="16" />
+    <circle class="guide-seat" cx="345" cy="189" r="16" />
+    <circle class="guide-seat" cx="176" cy="434" r="16" />
+    <circle class="guide-seat" cx="170" cy="370" r="16" />
+    <circle class="guide-seat" cx="169" cy="287" r="16" />
+    <circle class="guide-seat" cx="183" cy="182" r="16" />
+    <circle class="guide-seat" cx="232" cy="111" r="16" />
+    <circle class="guide-seat" cx="302" cy="59" r="16" />
+    <circle class="guide-seat" cx="632" cy="702" r="16" />
+    <circle class="guide-seat" cx="636" cy="626" r="16" />
+    <circle class="guide-seat" cx="639" cy="768" r="16" />
+    <circle class="guide-seat" cx="642" cy="833" r="16" />
+    <circle class="guide-seat" cx="780" cy="627" r="16" />
+    <circle class="guide-seat" cx="784" cy="692" r="16" />
+    <circle class="guide-seat" cx="784" cy="774" r="16" />
+    <circle class="guide-seat" cx="768" cy="879" r="16" />
+    <circle class="guide-seat" cx="717" cy="950" r="16" />
+    <circle class="guide-seat" cx="646" cy="1001" r="16" />
+    <circle class="guide-seat" cx="535" cy="1328" r="16" />
+    <circle class="guide-seat" cx="625" cy="1328" r="16" />
+    <circle class="guide-seat" cx="438" cy="1447" r="16" />
+    <circle class="guide-seat" cx="384" cy="1358" r="16" />
+    <circle class="guide-seat" cx="640" cy="550" r="16" />
+    <circle class="guide-seat" cx="632" cy="463" r="16" />
+    <circle class="guide-seat" cx="638" cy="396" r="16" />
+    <circle class="guide-seat" cx="625" cy="310" r="16" />
+    <circle class="guide-seat" cx="535" cy="314" r="16" />
+    <circle class="guide-seat" cx="396" cy="288" r="16" />
+    <circle class="guide-seat" cx="448" cy="206" r="16" />
+    <circle class="guide-seat" cx="524" cy="160" r="16" />
+    <circle class="guide-seat" cx="644" cy="167" r="16" />
+    <circle class="guide-seat" cx="714" cy="206" r="16" />
+    <circle class="guide-seat" cx="759" cy="277" r="16" />
+    <circle class="guide-seat" cx="784" cy="390" r="16" />
+    <circle class="guide-seat" cx="786" cy="464" r="16" />
+    <circle class="guide-seat" cx="783" cy="534" r="16" />
+    <circle class="guide-seat" cx="386" cy="553" r="16" />
+    <circle class="guide-seat" cx="378" cy="466" r="16" />
+    <circle class="guide-seat" cx="384" cy="399" r="16" />
+    <circle class="guide-seat" cx="530" cy="393" r="16" />
+    <circle class="guide-seat" cx="532" cy="467" r="16" />
+    <circle class="guide-seat" cx="529" cy="537" r="16" />
+    <circle class="guide-seat" cx="524" cy="1495" r="16" />
+    <circle class="guide-seat" cx="646" cy="1491" r="16" />
+    <circle class="guide-seat" cx="744" cy="1431" r="16" />
+    <circle class="guide-seat" cx="804" cy="1328" r="16" />
+  </g>
+
+  <style>
+    .guide-seat {
+      fill: rgba(255, 255, 255, 0.1);
+      stroke: rgba(255, 255, 255, 0.6);
+      stroke-width: 3;
+    }
+  </style>
+</svg>
